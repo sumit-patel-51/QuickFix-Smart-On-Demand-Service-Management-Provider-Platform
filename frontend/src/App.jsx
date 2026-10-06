@@ -17,6 +17,8 @@ import AdminLayout from "./components/Admin/AdminLayout";
 import AdminDashboard from "./Pages/Admin/AdminDashboard";
 import AdminUsers from "./Pages/Admin/AdminUsers";
 import Providers from "./Pages/Admin/Providers";
+import AdminServices from "./Pages/Admin/Services";
+import ServiceRequests from "./Pages/Admin/ServiceRequests";
 
 // ==========================================
 // CUSTOMER
@@ -31,6 +33,7 @@ import MyRequests from "./Pages/Customer/MyRequests";
 import RequestDetails from "./Pages/Customer/RequestDetails";
 import MyBookings from "./Pages/Customer/MyBookings";
 import ServiceDetails from "./Pages/Customer/ServiceDetails";
+import Settings from "./Pages/Customer/Settings";
 
 // ==========================================
 // PROVIDER
@@ -52,6 +55,7 @@ import ProviderRequestDetails from "./Pages/Provider/ProviderRequestDetails";
 import ProviderProfile from "./Pages/Provider/ProviderProfile";
 import ProviderBookings from "./Pages/Provider/ProviderBookings";
 import ProviderReviews from "./Pages/Provider/ProviderReviews";
+import ProviderSettings from "./Pages/Provider/Settings";
 
 function App() {
   return (
@@ -129,6 +133,8 @@ function App() {
           />
 
           <Route path="/customer/bookings" element={<MyBookings />} />
+
+          <Route path="/customer/settings" element={<Settings />} />
         </Route>
 
         {/* =================================================
@@ -265,18 +271,7 @@ function App() {
 
           {/* Settings */}
 
-          <Route
-            path="/provider/settings"
-            element={
-              <div className="min-h-[calc(100vh-80px)] bg-slate-50 p-6">
-                <div className="mx-auto max-w-7xl">
-                  <h1 className="text-2xl font-bold text-slate-900">
-                    Settings
-                  </h1>
-                </div>
-              </div>
-            }
-          />
+       <Route path="/provider/settings" element={<ProviderSettings />} />
 
           {/* Help */}
 
@@ -310,6 +305,10 @@ function App() {
           <Route path="/admin/users" element={<AdminUsers />} />
 
           <Route path="/admin/providers" element={<Providers />} />
+
+           <Route path="/admin/services" element={<AdminServices />} />
+
+           <Route  path="/admin/requests" element={<ServiceRequests />} />
         </Route>
 
         {/* =================================================

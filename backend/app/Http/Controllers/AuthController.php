@@ -20,19 +20,27 @@ class AuthController extends Controller
      * Keeps the password and internal fields out of every response.
      */
     private function formatUser(User $user): array
-    {
-        return [
-            'id' => $user->id,
-            'name' => $user->name,
-            'email' => $user->email,
-            'phone' => $user->phone,
-            'address' => $user->address,
-            'role' => $user->role,
-            'status' => $user->status,
-            'is_verified' => $user->is_verified,
-            'created_at' => $user->created_at?->toDateTimeString(),
-        ];
-    }
+{
+    return [
+        'id' => $user->id,
+        'name' => $user->name,
+        'email' => $user->email,
+        'phone' => $user->phone,
+        'address' => $user->address,
+        'role' => $user->role,
+        'status' => $user->status,
+        'is_verified' => $user->is_verified,
+
+        // Profile image
+        'profile_photo' => $user->profile_photo
+            ? asset('storage/' . $user->profile_photo)
+            : null,
+
+        'created_at' => $user->created_at
+            ? $user->created_at->toDateTimeString()
+            : null,
+    ];
+}
 
     /**
      * POST /api/register

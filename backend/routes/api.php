@@ -2,6 +2,13 @@
 
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\AdminProviderController;
+use App\Http\Controllers\Admin\AdminServiceController;
+use App\Http\Controllers\Admin\AdminServiceRequestController;
+
+
+
+
+
 use App\Http\Controllers\Provider\ProviderBookingController;
 use App\Http\Controllers\ProviderController;
 use App\Http\Controllers\Api\ServiceController;
@@ -11,11 +18,19 @@ use App\Http\Controllers\CustomerProfileController;
 use App\Http\Controllers\ReviewController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+
+
 use App\Http\Controllers\Provider\ProviderServiceController;
 use App\Http\Controllers\Provider\ProviderServiceRequestController;
 use App\Http\Controllers\Provider\ProviderProfileController;
+use App\Http\Controllers\Provider\ProviderSettingsController;
+
+
+
+
 
 use App\Http\Controllers\Api\Customer\NearbyProviderController;
+use App\Http\Controllers\Api\Customer\CustomerSettingsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -51,6 +66,17 @@ Route::get('/services/{id}', [ServiceController::class, 'show']);
 */
 
 Route::middleware('auth:sanctum')->prefix('customer')->group(function () {
+
+
+
+    // Get logged-in customer profile 
+ 
+    Route::get( '/user/profile', [CustomerProfileController::class, 'show'] );
+
+
+    // Update logged-in customer profile 
+    
+    Route::post( '/user/profile/update', [CustomerProfileController::class, 'update'] );
 
     // Nearby providers
     Route::get(
@@ -116,6 +142,15 @@ Route::middleware('auth:sanctum')->prefix('customer')->group(function () {
     Route::get(
         '/providers/{providerId}/reviews',
         [ReviewController::class, 'providerReviews']
+    );
+
+     // ==========================================
+    // CUSTOMER SETTINGS
+    // ==========================================
+
+    Route::post(
+        '/settings/change-password',
+        [CustomerSettingsController::class, 'changePassword']
     );
 
 });
@@ -335,6 +370,13 @@ Route::middleware('auth:sanctum')->prefix('provider')->group(function () {
     */
     Route::post('/update-status', [ProviderController::class, 'updateStatus']);
 
+
+     // Provider Settings
+    Route::post(
+        '/provider/settings/change-password',
+        [ProviderSettingsController::class, 'changePassword']
+    );
+
     /*
     |--------------------------------------------------------------------------
     | Logout / User
@@ -350,6 +392,8 @@ Route::middleware('auth:sanctum')->prefix('provider')->group(function () {
         '/user',
         [AuthController::class, 'me']
     );
+
+
 
 
 });
@@ -430,4 +474,100 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
         '/documents/view',
         [AdminProviderController::class, 'viewDocument']
     );
+
+
+    /*
+|--------------------------------------------------------------------------
+| Admin Services Management
+|--------------------------------------------------------------------------
+*/
+
+Route::prefix('admin/services')->group(function () {
+
+    // Statistics
+    Route::get('/stats', [
+        AdminServiceController::class,
+        'stats'
+    ]);
+
+    // Categories
+    Route::get('/categories', [
+        AdminServiceController::class,
+        'categories'
+    ]);
+
+    // List services
+    Route::get('/', [
+        AdminServiceController::class,
+        'index'
+    ]);
+
+    // Add service
+    Route::post('/', [
+        AdminServiceController::class,
+        'store'
+    ]);
+
+    // Single service
+    Route::get('/{id}', [
+        AdminServiceController::class,
+        'show'
+    ])->whereNumber('id');
+
+    // Update service
+    Route::put('/{id}', [
+        AdminServiceController::class,
+        'update'
+    ])->whereNumber('id');
+
+    // Toggle active/inactive
+    Route::patch('/{id}/toggle-status', [
+        AdminServiceController::class,
+        'toggleStatus'
+    ])->whereNumber('id');
+
+    // Delete service
+    Route::delete('/{id}', [
+        AdminServiceController::class,
+        'destroy'
+    ])->whereNumber('id');
+
+});
+
+    /*
+    |--------------------------------------------------------------------------
+    | Service Requests
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get(
+        '/admin/service-requests',
+        [AdminServiceRequestController::class, 'index']
+    );
+
+    Route::get(
+        '/admin/service-requests/options',
+        [AdminServiceRequestController::class, 'options']
+    );
+
+    Route::get(
+        '/admin/service-requests/export',
+        [AdminServiceRequestController::class, 'export']
+    );
+
+    Route::get(
+        '/admin/service-requests/{id}',
+        [AdminServiceRequestController::class, 'show']
+    );
+
+    Route::put(
+        '/admin/service-requests/{id}',
+        [AdminServiceRequestController::class, 'update']
+    );
+
+    Route::post(
+        '/admin/service-requests/{id}/cancel',
+        [AdminServiceRequestController::class, 'cancel']
+    );
+
 });

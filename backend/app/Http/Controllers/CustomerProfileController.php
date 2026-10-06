@@ -2,15 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
-
 use Illuminate\Support\Facades\Storage;
-
 use Illuminate\Support\Facades\Validator;
 
 class CustomerProfileController extends Controller
 {
-     /**
+    /**
      * Get logged-in customer profile
      */
     public function show(Request $request)
@@ -19,17 +18,7 @@ class CustomerProfileController extends Controller
 
         return response()->json([
             'success' => true,
-            'user' => [
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
-                'phone' => $user->phone,
-                'address' => $user->address,
-                'profile_photo' => $user->profile_photo
-                    ? asset('storage/' . $user->profile_photo)
-                    : null,
-                'is_verified' => $user->is_verified,
-            ],
+            'user' => $this->formatUser($user),
         ]);
     }
 
@@ -77,22 +66,40 @@ class CustomerProfileController extends Controller
                 ],
             ],
             [
-                'name.required' => 'Full name is required.',
+                'name.required' =>
+                    'Full name is required.',
 
-                'email.required' => 'Email address is required.',
-                'email.email' => 'Please enter a valid email address.',
-                'email.unique' => 'This email is already registered.',
+                'email.required' =>
+                    'Email address is required.',
 
-                'phone.required' => 'Phone number is required.',
-                'phone.unique' => 'This phone number is already registered.',
+                'email.email' =>
+                    'Please enter a valid email address.',
+
+                'email.unique' =>
+                    'This email is already registered.',
+
+                'phone.required' =>
+                    'Phone number is required.',
+
+                'phone.unique' =>
+                    'This phone number is already registered.',
 
                 'profile_photo.image' =>
                     'Profile photo must be an image.',
+
+                'profile_photo.mimes' =>
+                    'Profile photo must be JPG, JPEG, PNG or WEBP.',
 
                 'profile_photo.max' =>
                     'Profile photo must not exceed 2 MB.',
             ]
         );
+
+        /*
+        |--------------------------------------------------------------------------
+        | Validation
+        |--------------------------------------------------------------------------
+        */
 
         if ($validator->fails()) {
             return response()->json([
@@ -102,17 +109,30 @@ class CustomerProfileController extends Controller
             ], 422);
         }
 
-        $user->name = $request->name;
-        $user->email = $request->email;
-        $user->phone = $request->phone;
-        $user->address = $request->address;
+        /*
+        |--------------------------------------------------------------------------
+        | Update Basic Information
+        |--------------------------------------------------------------------------
+        */
+
+        $user->name = trim($request->name);
+        $user->email = trim($request->email);
+        $user->phone = trim($request->phone);
+        $user->address = $request->address
+            ? trim($request->address)
+            : null;
 
         /*
-         * Profile Photo
-         */
+        |--------------------------------------------------------------------------
+        | Profile Photo
+        |--------------------------------------------------------------------------
+        */
+
         if ($request->hasFile('profile_photo')) {
 
-            // Delete old image
+            /*
+             * Delete old profile photo
+             */
             if (
                 $user->profile_photo &&
                 Storage::disk('public')->exists(
@@ -124,6 +144,12 @@ class CustomerProfileController extends Controller
                 );
             }
 
+            /*
+             * Store new profile photo
+             *
+             * Example:
+             * storage/app/public/profile_photos/abc123.jpg
+             */
             $path = $request
                 ->file('profile_photo')
                 ->store('profile_photos', 'public');
@@ -131,22 +157,71 @@ class CustomerProfileController extends Controller
             $user->profile_photo = $path;
         }
 
+        /*
+        |--------------------------------------------------------------------------
+        | Save User
+        |--------------------------------------------------------------------------
+        */
+
         $user->save();
+
+        /*
+        |--------------------------------------------------------------------------
+        | Refresh User
+        |--------------------------------------------------------------------------
+        */
+
+        $user->refresh();
 
         return response()->json([
             'success' => true,
             'message' => 'Profile updated successfully.',
-            'user' => [
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
-                'phone' => $user->phone,
-                'address' => $user->address,
-                'profile_photo' => $user->profile_photo
-                    ? asset('storage/' . $user->profile_photo)
-                    : null,
-                'is_verified' => $user->is_verified,
-            ],
+            'user' => $this->formatUser($user),
         ]);
     }
+
+    /**
+     * Format User Response
+     *
+     * This function is used by both:
+     * - show()
+     * - update()
+     *
+     * So the same user structure is returned everywhere.
+     */
+    private function formatUser(User $user): array
+    {
+        return [
+            'id' => $user->id,
+
+            'name' => $user->name,
+
+            'email' => $user->email,
+
+            'phone' => $user->phone,
+
+            'address' => $user->address,
+
+            'role' => $user->role,
+
+            'status' => $user->status,
+
+            'is_verified' => $user->is_verified,
+
+            /*
+             * Full profile image URL
+             *
+             * Example:
+             * http://127.0.0.1:8000/storage/profile_photos/abc.jpg
+             */
+            'profile_photo' => $user->profile_photo
+                ? asset('storage/' . $user->profile_photo)
+                : null,
+
+            'created_at' => $user->created_at
+                ? $user->created_at->toDateTimeString()
+                : null,
+        ];
+    }
 }
+
