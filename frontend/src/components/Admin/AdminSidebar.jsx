@@ -11,6 +11,7 @@ import {
   CreditCard,
   BarChart3,
   Settings,
+  MessageSquareText,
   HelpCircle,
   LogOut,
   X,
@@ -49,11 +50,12 @@ const AdminSidebar = ({ isOpen, onClose, onLogout }) => {
       path: "/admin/requests",
       icon: ClipboardList,
     },
-    {
-      name: "Bookings",
-      path: "/admin/bookings",
-      icon: CalendarCheck,
-    },
+     
+    // {
+    //   name: "Bookings",
+    //   path: "/admin/bookings",
+    //   icon: CalendarCheck,
+    // },
   ];
 
   const managementItems = [

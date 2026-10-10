@@ -19,6 +19,8 @@ import AdminUsers from "./Pages/Admin/AdminUsers";
 import Providers from "./Pages/Admin/Providers";
 import AdminServices from "./Pages/Admin/Services";
 import ServiceRequests from "./Pages/Admin/ServiceRequests";
+import AdminProfile from "./Pages/Admin/AdminProfile";
+import AdminFeedback from "./Pages/Admin/AdminFeedback";
 
 // ==========================================
 // CUSTOMER
@@ -34,6 +36,7 @@ import RequestDetails from "./Pages/Customer/RequestDetails";
 import MyBookings from "./Pages/Customer/MyBookings";
 import ServiceDetails from "./Pages/Customer/ServiceDetails";
 import Settings from "./Pages/Customer/Settings";
+import CustomerReviews from "./Pages/Customer/CustomerReviews";
 
 // ==========================================
 // PROVIDER
@@ -135,6 +138,8 @@ function App() {
           <Route path="/customer/bookings" element={<MyBookings />} />
 
           <Route path="/customer/settings" element={<Settings />} />
+          
+          <Route path="/customer/reviews" element={<CustomerReviews />} />
         </Route>
 
         {/* =================================================
@@ -309,6 +314,10 @@ function App() {
            <Route path="/admin/services" element={<AdminServices />} />
 
            <Route  path="/admin/requests" element={<ServiceRequests />} />
+
+           <Route path="/admin/profile" element={<AdminProfile />}/>
+
+           <Route path="/admin/feedback" element={<AdminFeedback />} />
         </Route>
 
         {/* =================================================

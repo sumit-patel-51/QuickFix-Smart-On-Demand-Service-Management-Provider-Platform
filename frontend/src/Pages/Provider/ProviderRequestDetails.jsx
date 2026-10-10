@@ -540,7 +540,7 @@ const ProviderRequestDetails = () => {
               size={14}
               className="transition-transform group-hover:-translate-x-0.5"
             />
-            Back to Dashboard
+            Back to My Bookings
           </button>
 
           <button

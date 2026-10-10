@@ -4,7 +4,8 @@ use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\AdminProviderController;
 use App\Http\Controllers\Admin\AdminServiceController;
 use App\Http\Controllers\Admin\AdminServiceRequestController;
-
+use App\Http\Controllers\Admin\AdminProfileController;
+use App\Http\Controllers\Admin\AdminReviewController;
 
 
 
@@ -31,6 +32,7 @@ use App\Http\Controllers\Provider\ProviderSettingsController;
 
 use App\Http\Controllers\Api\Customer\NearbyProviderController;
 use App\Http\Controllers\Api\Customer\CustomerSettingsController;
+use App\Http\Controllers\Api\Customer\CustomerReviewController;
 
 /*
 |--------------------------------------------------------------------------
@@ -151,6 +153,11 @@ Route::middleware('auth:sanctum')->prefix('customer')->group(function () {
     Route::post(
         '/settings/change-password',
         [CustomerSettingsController::class, 'changePassword']
+    );
+
+      Route::get(
+        '/my-reviews',
+        [CustomerReviewController::class, 'index']
     );
 
 });
@@ -569,5 +576,13 @@ Route::prefix('admin/services')->group(function () {
         '/admin/service-requests/{id}/cancel',
         [AdminServiceRequestController::class, 'cancel']
     );
+
+     Route::get('/admin/profile', [AdminProfileController::class, 'show']);
+
+    Route::put('/admin/profile', [AdminProfileController::class, 'update']);
+
+    Route::post('/admin/profile/change-password', [ AdminProfileController::class,'changePassword']);
+
+    Route::get('/admin/reviews', [AdminReviewController::class, 'index']);
 
 });
