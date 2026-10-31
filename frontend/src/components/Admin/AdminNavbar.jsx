@@ -125,16 +125,7 @@ const AdminNavbar = ({ onMenuClick, onLogout }) => {
             </span>
           </div>
 
-          {/* Search */}
-          <div className="hidden md:flex h-9 items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3">
-            <Search size={15} className="text-slate-400" />
-
-            <input
-              type="text"
-              placeholder="Search requests, users, providers..."
-              className="w-64 bg-transparent text-xs text-slate-700 placeholder:text-slate-400 focus:outline-none"
-            />
-          </div>
+      
         </div>
 
         {/* Right */}
@@ -275,14 +266,14 @@ const AdminNavbar = ({ onMenuClick, onLogout }) => {
                   My Profile
                 </Link>
 
-                <Link
+                {/* <Link
                   to="/admin/settings"
                   onClick={() => setIsDropdownOpen(false)}
                   className="flex items-center gap-2 rounded-lg px-3 py-2.5 text-xs text-slate-600 hover:bg-blue-50 hover:text-blue-600"
                 >
                   <Settings size={15} />
                   Settings
-                </Link>
+                </Link> */}
 
                 <div className="my-1 h-px bg-slate-100" />
 

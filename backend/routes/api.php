@@ -6,7 +6,7 @@ use App\Http\Controllers\Admin\AdminServiceController;
 use App\Http\Controllers\Admin\AdminServiceRequestController;
 use App\Http\Controllers\Admin\AdminProfileController;
 use App\Http\Controllers\Admin\AdminReviewController;
-
+use App\Http\Controllers\Admin\AdminDashboardController;
 
 
 
@@ -585,4 +585,5 @@ Route::prefix('admin/services')->group(function () {
 
     Route::get('/admin/reviews', [AdminReviewController::class, 'index']);
 
+    Route::get('/admin/dashboard',[AdminDashboardController::class, 'index'] );
 });

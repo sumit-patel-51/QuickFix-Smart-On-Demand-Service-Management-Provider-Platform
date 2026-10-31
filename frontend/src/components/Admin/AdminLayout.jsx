@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import AdminSidebar from "./AdminSidebar";
@@ -6,6 +7,8 @@ import api from "../../api/axios";
 
 const AdminLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -27,24 +30,36 @@ const AdminLayout = () => {
     }
   };
 
+  const toggleSidebar = () => {
+    setSidebarCollapsed((prev) => !prev);
+  };
+
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800 antialiased">
+
       <AdminSidebar
         isOpen={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
         onLogout={handleLogout}
+        collapsed={sidebarCollapsed}
+        onToggle={toggleSidebar}
       />
 
-      <div className="flex min-h-screen flex-col lg:pl-64">
+      <div
+        className={`flex min-h-screen flex-col transition-all duration-300 ${
+          sidebarCollapsed ? "lg:pl-20" : "lg:pl-64"
+        }`}
+      >
         <AdminNavbar
           onMenuClick={() => setSidebarOpen(true)}
           onLogout={handleLogout}
         />
 
-        <main className="flex-1">
+        <main className="min-w-0 flex-1">
           <Outlet />
         </main>
       </div>
+
     </div>
   );
 };

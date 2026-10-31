@@ -889,17 +889,7 @@ function AdminLogin() {
             </p>
           </div>
 
-          {/* ============================
-              DEMO ADMIN
-          ============================ */}
-          <div className="mt-4 p-2.5 bg-indigo-50 rounded-lg border border-indigo-100">
-            <p className="text-xs text-slate-600 text-center">
-              <span className="font-semibold">
-                Demo Admin:
-              </span>{" "}
-              admin@school.com / Admin@123
-            </p>
-          </div>
+    
 
         </div>
       </div>

@@ -626,7 +626,7 @@ function Login() {
             {/* ============================
                 REMEMBER ME
             ============================ */}
-            <div className="flex items-center">
+            {/* <div className="flex items-center">
               <input
                 id="remember"
                 name="remember"
@@ -642,7 +642,7 @@ function Login() {
               >
                 Remember me
               </label>
-            </div>
+            </div> */}
 
             {/* ============================
                 SUBMIT BUTTON

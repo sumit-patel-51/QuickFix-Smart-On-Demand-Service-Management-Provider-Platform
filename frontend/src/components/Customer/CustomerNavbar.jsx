@@ -1,4 +1,3 @@
-// PATH: src/components/CustomerNavbar.jsx
 
 import React, { useState, useEffect, useRef } from "react";
 import {
@@ -10,6 +9,7 @@ import {
   LogOut,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 import api from "../../api/axios";
 
 const CustomerNavbar = ({ onMenuClick, onLogout }) => {
@@ -59,7 +59,7 @@ const CustomerNavbar = ({ onMenuClick, onLogout }) => {
     };
   }, []);
 
-  // ✅ Handle logout
+  // Handle logout
   const handleLogout = async () => {
     try {
       await api.post("/logout");
@@ -71,6 +71,38 @@ const CustomerNavbar = ({ onMenuClick, onLogout }) => {
       localStorage.removeItem("role");
       localStorage.removeItem("refresh_token");
       navigate("/login");
+    }
+  };
+
+  // Logout confirmation with SweetAlert2
+  const confirmLogout = async () => {
+    setIsDropdownOpen(false);
+
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "Do you really want to logout from your account?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, Logout",
+      cancelButtonText: "Cancel",
+      confirmButtonColor: "#ea580c",
+      cancelButtonColor: "#64748b",
+      reverseButtons: true,
+      focusCancel: true,
+      allowOutsideClick: false,
+      allowEscapeKey: true,
+    });
+
+    if (result.isConfirmed) {
+      try {
+        if (onLogout) {
+          await onLogout();
+        } else {
+          await handleLogout();
+        }
+      } catch (error) {
+        console.error("Logout callback error:", error);
+      }
     }
   };
 
@@ -88,6 +120,7 @@ const CustomerNavbar = ({ onMenuClick, onLogout }) => {
   return (
     <header className="sticky top-0 z-30 h-16 w-full border-b border-gray-200/80 bg-white/95 backdrop-blur-md sm:h-20">
       <div className="relative mx-auto flex h-full items-center justify-between px-3 sm:px-6 lg:px-8">
+
         {/* Left - Mobile Menu */}
         <div className="flex items-center">
           <button
@@ -113,6 +146,7 @@ const CustomerNavbar = ({ onMenuClick, onLogout }) => {
 
         {/* Right */}
         <div className="ml-auto flex items-center gap-1.5 sm:gap-3">
+
           {/* Notification */}
           <button
             type="button"
@@ -168,6 +202,7 @@ const CustomerNavbar = ({ onMenuClick, onLogout }) => {
             {/* Dropdown Menu */}
             {isDropdownOpen && (
               <div className="absolute right-0 mt-2 w-56 origin-top-right rounded-2xl border border-gray-100 bg-white p-1.5 shadow-xl shadow-gray-900/5 ring-1 ring-black/5">
+
                 {/* Mobile User Info */}
                 <div className="mb-1 flex items-center gap-3 border-b border-gray-100 px-3 py-3 md:hidden">
                   <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-blue-50 text-sm font-semibold text-blue-600">
@@ -182,6 +217,7 @@ const CustomerNavbar = ({ onMenuClick, onLogout }) => {
                       <span>{getUserInitial()}</span>
                     )}
                   </div>
+
                   <div className="min-w-0">
                     <p className="truncate text-xs font-semibold text-gray-900">
                       {user?.name || "Customer"}
@@ -223,10 +259,7 @@ const CustomerNavbar = ({ onMenuClick, onLogout }) => {
                 {/* Sign Out */}
                 <button
                   type="button"
-                  onClick={() => {
-                    setIsDropdownOpen(false);
-                    onLogout ? onLogout() : handleLogout();
-                  }}
+                  onClick={confirmLogout}
                   className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2.5 text-xs font-medium text-red-600 transition-colors hover:bg-red-50"
                 >
                   <LogOut className="h-4 w-4 text-red-500" />
